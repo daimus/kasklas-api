@@ -13,7 +13,6 @@ class Authentication {
 
   public function signin($identity, $password, $remember = false){
     $result['success'] = false;
-    $result['status'] = 'error';
     $result['message'] = null;
     $result['hash'] = null;
 
@@ -54,9 +53,9 @@ class Authentication {
     }
 
     $result['success'] = true;
-    $result['status'] = 'success';
     $result['message'] = 'logged in';
     $result['hash'] = $session['session_data']['hash'];
+    $result['user'] = $identity;
     return $result;
   }
 
