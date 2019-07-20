@@ -7,15 +7,21 @@ class MY_Controller extends CI_Controller {
     $this->validateHash();
   }
 
+
   public function validateHash(){
-    if (empty($this->input->post('hash'))){
-      echo json_encode(array('success' => false, 'status' => 'error', 'message' => 'missing hash'));
+    $user = $this->input->server('PHP_AUTH_USER');
+    $hash = $this->input->server('PHP_AUTH_PW');
+
+    if (empty($hash)){
+      header('HTTP/1.0 401 Unauthorized');
+      echo json_encode(array('success' => false, 'message' => 'missing hash'));
       die();
     }
 
     $this->load->model('apimodel');
-    if ($this->apimodel->get('session', array('hash' => $this->input->post('hash')))->num_rows() <= 0){
-      echo json_encode(array('success' => false, 'status' => 'error', 'message' => 'invalid hash'));
+    if ($this->apimodel->get('session', array('hash' => $hash))->num_rows() <= 0){
+      header('HTTP/1.0 401 Unauthorized');
+      echo json_encode(array('success' => false, 'message' => 'invalid hash'));
       die();
     }
   }
